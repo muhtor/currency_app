@@ -1,0 +1,72 @@
+version: '3'
+
+services:
+
+  cr_db:
+    container_name: cr_db
+    image: postgres
+    environment:
+      POSTGRES_DB: db_cr
+      POSTGRES_USER: db_user
+      POSTGRES_PASSWORD: db_pass
+    ports:
+      - "5434:5432"
+
+  # Redis
+  cr_redis:
+    image: redis:latest
+    container_name: cr_redis
+    ports:
+      - "6379:6379"
+
+  cr_web:
+    container_name: cr_web
+    build: .
+    command: python manage.py runserver 0.0.0.0:8888 # --noreload
+    volumes:
+      - .:/code
+    ports:
+      - "8888:8888"
+    depends_on:
+      - cr_db
+    env_file:
+      - .env
+
+  cr_celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A config.celery_app worker --loglevel=info
+    depends_on:
+      - cr_web
+      - cr_db
+      - cr_redis
+    env_file:
+      - .env
+
+    volumes:
+      - .:/code
+
+  cr_celery_beat:
+    build: .
+    command: celery -A config.celery_app beat --loglevel=info
+    depends_on:
+      - cr_db
+      - cr_redis
+    env_file:
+      - .env
+
+  cr_flower:
+    build:
+      context: .
+    image: cr_celery_flower
+    command: celery -A config.celery_app flower --address=0.0.0.0 --port=5566 --basic_auth=admin:123
+    volumes:
+      - .:/code
+    ports:
+      - '5566:5566'
+    depends_on:
+      - cr_celery
+
+    env_file:
+      - .env
