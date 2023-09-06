@@ -23,7 +23,7 @@ def debug_task(self):
 app.conf.beat_schedule = {
     'load_daily_exchange_rates': {
         'task': 'api.tasks.load_daily_exchange_rates',
-        'schedule': crontab(hour="12", minute="0"),  # Загрузка в 12:00 мск
+        'schedule': crontab(hour="12"),  # Загрузка в 12:00 мск
         # 'schedule': crontab(),  # каждую минуту
     },
 }

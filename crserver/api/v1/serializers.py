@@ -31,7 +31,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class UserCurrencyAddSerializer(serializers.Serializer):
-    currency = serializers.CharField()  # ID котируемой валюты
+    currency = serializers.CharField(max_length=10, required=True)  # ID котируемой валюты
     threshold = serializers.DecimalField(max_digits=10, decimal_places=4)
 
     def create(self, validated_data):

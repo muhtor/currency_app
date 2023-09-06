@@ -28,10 +28,6 @@ def load_daily_exchange_rates():
 
             checks_threshold_and_email_sending()  # проверки пороговое значение
 
-        else:
-            # ошибку загрузки данных
-            pass
-
 
 @shared_task
 def send_threshold_user_email(email, currency_id, threshold):
@@ -40,5 +36,4 @@ def send_threshold_user_email(email, currency_id, threshold):
     message += 'Следующие котируемые валюты превысили ваши пороговые значения:\n'
     message += f'- {currency_id}: {threshold}\n'
     message += '\nС уважением,\nВаш менеджер по отслеживанию курсов валют'
-    print("send_threshold_user_email > message...", message)
     send_mail(subject, message, settings.EMAIL_FROM, [email])
