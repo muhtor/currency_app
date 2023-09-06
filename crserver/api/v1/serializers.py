@@ -17,6 +17,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
+        extra_kwargs = {'password': {'write_only': True}}
         fields = ('email', 'password')
 
     def create(self, validated_data):
@@ -32,7 +33,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class UserCurrencyAddSerializer(serializers.Serializer):
     currency = serializers.CharField(max_length=10, required=True)  # ID котируемой валюты
-    threshold = serializers.DecimalField(max_digits=10, decimal_places=4)
+    threshold = serializers.DecimalField(max_digits=10, decimal_places=4, min_value=1)
 
     def create(self, validated_data):
         user = self.context['request'].user

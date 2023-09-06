@@ -335,9 +335,9 @@ vacancy/media/
 
 
 .ipython/
-.env
-.envs/*
-!.envs/env.example
+#.env
+#.envs/*
+#!.envs/env.example
 .temp/
 *.sql.gz
 vacancies.json
